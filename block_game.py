@@ -1,6 +1,6 @@
 from os import stat
+from random import randrange
 import pygame
-import random
 
 BLACK  = (   0,   0,   0)
 WHITE  = ( 255, 255, 255)
@@ -28,11 +28,11 @@ class Block(pygame.sprite.Sprite):
     def reset_pos(self):
         """ Reset position to the top of the screen """
         if self.snitch:
-            self.rect.x = random.randrange(screen_width)
-            self.rect.y = random.randrange(-90000, -5000)
+            self.rect.x = randrange(screen_width)
+            self.rect.y = randrange(-90000, -5000)
         elif self.update_block == True:
-            self.rect.y = random.randrange(-300, -20)
-            self.rect.x = random.randrange(5, screen_width - 5)
+            self.rect.y = randrange(-300, -20)
+            self.rect.x = randrange(5, screen_width - 5)
         else:
             self.kill()
     def update(self, speed):
@@ -48,14 +48,14 @@ def populate_blocks(starting_block_amount):
         Spawns one golden block worth: Score+6 Speed+2 """
     for i in range(starting_block_amount):
         block = Block(BLACK, 20, 15)
-        block.rect.x = random.randrange(screen_width)
-        block.rect.y = random.randrange(-75, 0)    
+        block.rect.x = randrange(screen_width)
+        block.rect.y = randrange(-75, 0)    
         block_list.add(block)
         all_sprites_list.add(block)
     golden_block = Block(GOLD, 20, 15)
     golden_block.snitch = True
-    golden_block.rect.x = random.randrange(screen_width)
-    golden_block.rect.y = random.randrange(-2500, -220)
+    golden_block.rect.x = randrange(screen_width)
+    golden_block.rect.y = randrange(-2500, -220)
     block_list.add(golden_block)
     all_sprites_list.add(golden_block)    
     
@@ -63,8 +63,8 @@ def spawn_red_blocks(spawn_number):
     """ Spawns red blocks every time score is changed """
     for i in range(spawn_number):
         new_block = Block(RED, 20, 15)
-        new_block.rect.x = random.randrange(screen_width)
-        new_block.rect.y = random.randrange(-500, -25)        
+        new_block.rect.x = randrange(screen_width)
+        new_block.rect.y = randrange(-500, -25)        
         red_block_list.add(new_block)
         block_list.add(new_block)
     
