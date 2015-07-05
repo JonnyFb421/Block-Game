@@ -5,13 +5,6 @@ import pygame
 
 SCREEN_WIDTH  = 700
 SCREEN_HEIGHT = 400
-SCORE_TO_SPEED_RATIO    = 3
-SCORE_FROM_BLACK_BLOCK  = 1
-SPEED_FROM_BLACK_BLOCK  = 1
-SCORE_FROM_GOLD_BLOCK   = 6
-SPEED_FROM_GOLD_BLOCK   = 2
-PENALTY_SCORE_RED_BLOCK = 3
-PENALTY_SPEED_RED_BLOCK = 1
 BLOCK_WIDTH = 20
 BLOCK_HEIGHT = 15
 
@@ -92,6 +85,15 @@ class Block(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         #Call the parent class (Sprite) constructor
         super().__init__()
+        self.BLOCK_MAX_HEIGHT = -100
+        self.BLOCK_MIN_HEIGHT = -25
+        self.SCORE_TO_SPEED_RATIO    = 3
+        self.SCORE_FROM_BLACK_BLOCK  = 1
+        self.SPEED_FROM_BLACK_BLOCK  = 1
+        self.SCORE_FROM_GOLD_BLOCK   = 6
+        self.SPEED_FROM_GOLD_BLOCK   = 2
+        self.PENALTY_SCORE_RED_BLOCK = 3
+        self.PENALTY_SPEED_RED_BLOCK = 1
         self.color = color
         self.image = pygame.Surface([width, height]).convert()
         self.image.fill(color)
@@ -106,7 +108,7 @@ class Block(pygame.sprite.Sprite):
         for i in range(starting_block_amount):
             self.block = Block(pygame.Color("black"), BLOCK_WIDTH, BLOCK_HEIGHT)
             self.block.rect.x = random.randrange(SCREEN_WIDTH - BLOCK_WIDTH)
-            self.block.rect.y = random.randrange(-75, 0)    
+            self.block.rect.y = random.randrange(self.BLOCK_MAX_HEIGHT, self.BLOCK_MIN_HEIGHT)    
             self.block_list.add(self.block)
         self.golden_block = Block(pygame.Color("gold"), BLOCK_WIDTH, BLOCK_HEIGHT)
         self.golden_block.snitch = True
@@ -120,7 +122,7 @@ class Block(pygame.sprite.Sprite):
         for i in range(spawn_number):
             self.new_block = Block(pygame.Color("red"), BLOCK_WIDTH, BLOCK_HEIGHT)
             self.new_block.rect.x = random.randrange(SCREEN_WIDTH - BLOCK_WIDTH)
-            self.new_block.rect.y = random.randrange(-500, -25)        
+            self.new_block.rect.y = random.randrange(self.BLOCK_MAX_HEIGHT, self.BLOCK_MIN_HEIGHT)        
             self.new_block.add(red_block_list, block_list)
         
     def process_block_collision(self, game):
@@ -130,18 +132,18 @@ class Block(pygame.sprite.Sprite):
             #Player hit gold box
             if self.block.color == pygame.Color("gold"):
                 game.sound_controller.play_black_hit_sound()
-                game.score += SCORE_FROM_GOLD_BLOCK
-                game.speed += SPEED_FROM_GOLD_BLOCK
+                game.score += self.SCORE_FROM_GOLD_BLOCK
+                game.speed += self.SPEED_FROM_GOLD_BLOCK
             #Player hit red box
             if self.block.color == pygame.Color("red"):
                 game.sound_controller.play_red_hit_sound()
-                game.score = game.score - PENALTY_SCORE_RED_BLOCK if game.score >= PENALTY_SCORE_RED_BLOCK else 0 
-                if game.speed > PENALTY_SPEED_RED_BLOCK: game.speed -= PENALTY_SPEED_RED_BLOCK
+                game.score = game.score - self.PENALTY_SCORE_RED_BLOCK if game.score >= self.PENALTY_SCORE_RED_BLOCK else 0 
+                if game.speed > self.PENALTY_SPEED_RED_BLOCK: game.speed -= self.PENALTY_SPEED_RED_BLOCK
             #Player hit black box
             elif self.block.color == pygame.Color("black"):
-                game.score += SCORE_FROM_BLACK_BLOCK
-                if game.score % SCORE_TO_SPEED_RATIO == 1 and game.prev_score != game.score:
-                    game.speed += SPEED_FROM_BLACK_BLOCK
+                game.score += self.SCORE_FROM_BLACK_BLOCK
+                if game.score % self.SCORE_TO_SPEED_RATIO == 1 and game.prev_score != game.score:
+                    game.speed += self.SPEED_FROM_BLACK_BLOCK
                 game.sound_controller.play_black_hit_sound()
             #Stops red blocks from spawning as score lowers
             if game.score < len(game.red_block_list):
